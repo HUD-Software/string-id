@@ -1,0 +1,14 @@
+[package]
+name = "string-id"
+version = "0.1.0"
+authors = ["Julian LALU"]
+edition = "2021"
+license = "MIT"
+description = "Lightweight system for using string that are immutable."
+repository = "https://github.com/HUD-Software/string-id"  
+keywords = ["hash", "string", "gamedev"]
+categories = ["data-structures", "no-std", "game-development"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
