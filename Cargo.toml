@@ -12,3 +12,4 @@ categories = ["data-structures", "no-std", "game-development"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cityhash-sys = "1.0.1"
