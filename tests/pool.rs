@@ -1,6 +1,5 @@
-
-
 #![feature(allocator_api)]
+use std::alloc::{alloc, Layout};
 use string_id::{Pool, PoolAllocator};
 
 struct MyAllocator{
@@ -8,8 +7,8 @@ struct MyAllocator{
 }
 
 unsafe impl PoolAllocator for MyAllocator{
-    fn allocate(&self, layout: Layout) -> Result<core::ptr::NonNull<[u8]>, core::alloc::AllocError> { 
-        let ptr = libc::malloc
+    fn allocate(&self, layout: Layout) -> * mut u8 { 
+        unsafe { alloc(layout) }
     }
 }
 

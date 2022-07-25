@@ -6,7 +6,7 @@ use slots::Slots;
 use core::ptr::NonNull;
 
 pub unsafe trait PoolAllocator {
-    fn allocate(&self, _:core::alloc::Layout) ->  Result<NonNull<[u8]>, core::alloc::AllocError>;
+    fn allocate(&self, _:core::alloc::Layout) -> * mut u8;
 }
 
 pub struct Pool<'alloc, SlotAllocator>
