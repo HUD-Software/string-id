@@ -1,8 +1,30 @@
-mod slots;
 mod slot;
-use slots::Slots as Slots;
-use slot::Slot as  Slot;
+mod slots;
+use slot::Slot;
+use slots::Slots;
 
-struct Pool {
-    slots: [Slots; 256],
+use core::ptr::NonNull;
+
+pub unsafe trait PoolAllocator {
+    fn allocate(&self, _:core::alloc::Layout) ->  Result<NonNull<[u8]>, core::alloc::AllocError>;
+}
+
+pub struct Pool<'alloc, SlotAllocator>
+where
+    SlotAllocator: PoolAllocator,
+{
+    slots: [Slots<'alloc, SlotAllocator>; 256],
+}
+
+
+impl<'alloc, SlotAllocator> Pool<'alloc, SlotAllocator>
+where
+    SlotAllocator: PoolAllocator,
+    Slots<'alloc, SlotAllocator>: core::marker::Copy
+{
+    pub fn new(allocator: &'alloc SlotAllocator) -> Self {
+        Pool {
+            slots: [Slots::<'alloc, SlotAllocator>::new_in(allocator); 256],
+        }
+    }
 }
