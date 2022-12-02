@@ -1,68 +1,53 @@
-#[derive(PartialEq, Eq)]
-struct Offset(u32);
+const BLOCK_BITS: u32 = 13;
+const BLOCK_MASK: u32 = ((1 << BLOCK_BITS) - 1) << OFFSET_BITS;
 
-impl Offset {
-    pub const BITS: u32 = 16;
-    pub const MASK: u32 = (1 << Offset::BITS) - 1;
-}
+const OFFSET_BITS: u32 = 16;
+const OFFSET_MASK: u32 = (1 << OFFSET_BITS) - 1;
 
-#[derive(PartialEq, Eq)]
-struct Block(u32);
-
-impl Block {
-    pub const BITS: u32 = 13;
-    pub const MASK: u32 = ((1 << Block::BITS) - 1) << Offset::BITS;
-}
-
-#[derive(PartialEq, Eq)]
-struct ProbeHash(u32);
-
-impl ProbeHash {
-    pub const BITS: u32 = 3;
-    pub const MASK: u32 = ((1 << ProbeHash::BITS) - 1) << (Offset::BITS + Block::BITS);
-}
+const PROBE_HASH_BITS: u32 = 3;
+const PROBE_HASH_MASK: u32 = ((1 << PROBE_HASH_BITS) - 1) << (OFFSET_BITS + BLOCK_BITS);
 
 const _: () = assert!(
-    (Block::BITS + Offset::BITS + ProbeHash::BITS) == u32::BITS,
+    (BLOCK_BITS + OFFSET_BITS + PROBE_HASH_BITS) == u32::BITS,
     "Block + Offset + Probe BITS should be 32 bits"
 );
 const _: () = assert!(
-    (Block::MASK + Offset::MASK + ProbeHash::MASK) == u32::MAX,
+    (BLOCK_MASK + OFFSET_MASK + PROBE_HASH_MASK) == u32::MAX,
     "Block + Offset + Probe MASK be 32 bits"
 );
 
 pub struct Slot(u32);
 
 impl Slot {
-    pub fn offset(&self) -> Offset {
-        Offset(self.0 & Offset::MASK)
+    pub fn offset(&self) -> u32 {
+        self.0 & OFFSET_MASK
     }
 
-    pub fn block(&self) -> Block {
-        Block((self.0 & Block::MASK) >> Offset::BITS)
+    pub fn block(&self) -> u32 {
+        (self.0 & BLOCK_MASK) >> OFFSET_BITS
     }
 
-    pub fn probe_hash(&self) -> ProbeHash {
-        ProbeHash((self.0 & ProbeHash::MASK) >> Offset::BITS + Block::BITS)
+    pub fn probe_hash(&self) -> u32 {
+        (self.0 & PROBE_HASH_MASK) >> OFFSET_BITS + BLOCK_BITS
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{Block, Offset, ProbeHash, Slot};
+    use super::*;
 
     fn slot_offset() {
-        let slot = Slot(Offset::MASK);
-        assert_eq!(slot.offset().0, Offset::MASK);
+        let slot = Slot(OFFSET_MASK);
+        assert_eq!(slot.offset(), OFFSET_MASK);
     }
 
     fn slot_block() {
-        let slot = Slot(Block::MASK);
-        assert_eq!(slot.block().0, Block::MASK)
+        let slot = Slot(BLOCK_MASK);
+        assert_eq!(slot.block(), BLOCK_MASK)
     }
 
     fn slot_probe_hash() {
-        let slot = Slot(ProbeHash::MASK);
-        assert_ne!(slot.probe_hash().0, ProbeHash::MASK);
+        let slot = Slot(PROBE_HASH_MASK);
+        assert_ne!(slot.probe_hash(), PROBE_HASH_MASK);
     }
 }
