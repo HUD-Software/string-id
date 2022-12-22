@@ -1,6 +1,6 @@
 #![doc=include_str!("../README.md")]
 #![no_std]
-#![feature(allocator_api)]
+
 mod pool;
 mod string_id;
 

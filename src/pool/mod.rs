@@ -1,11 +1,10 @@
 mod slot;
 mod slots;
+mod allocator;
+
 use slot::Slot;
 use slots::Slots;
-
-pub unsafe trait PoolAllocator {
-    fn allocate(&self, _: core::alloc::Layout) -> *mut u8;
-}
+pub use allocator::PoolAllocator;
 
 pub struct Pool<'alloc, SlotAllocator: PoolAllocator> {
     slots: [Slots<'alloc, SlotAllocator>; 256],

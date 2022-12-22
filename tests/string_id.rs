@@ -9,7 +9,6 @@ unsafe impl PoolAllocator for MyAllocator {
     }
 }
 
-
 #[test]
 fn test_creation() {
     let id = StringId::from("none");
