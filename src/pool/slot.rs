@@ -29,6 +29,7 @@ const _: () = assert!(
 
 pub struct Slot(u32);
 
+
 impl Slot {
     pub fn offset(&self) -> u32 {
         self.0 & OFFSET_MASK
